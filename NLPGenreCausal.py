@@ -75,13 +75,56 @@ With these insights, studios, streamers, and marketers can:
 - Metadata from IMDb (season, year, episode, etc.).
 """)
 
-# --- Data Loading ---
-@st.cache_data
-def load_data():
-    df = pd.read_csv(r"C:\Users\apalo\OneDrive\Desktop\NLP Genre\Merged_Df_Cleaned.csv")
 
+# --- Data Loading ---
+@st.cache_data(show_spinner=True)
+def _read_csv(path_or_bytes):
+    return pd.read_csv(path_or_bytes)
+
+def load_data():
+    st.markdown("#### Data source")
+    up = st.file_uploader("Upload `Merged_Df_Cleaned.csv` (or skip if it's in the repo)", type=["csv"], key="merged_csv")
+
+    df = None
+
+    # 1) If user uploaded a file, use it.
+    if up is not None:
+        df = _read_csv(up)
+
+    # 2) Else try an explicit path from secrets or env (configure in Cloud if you want).
+    if df is None:
+        for candidate in (
+            st.secrets.get("DATA_CSV", ""),          # Streamlit secrets
+            os.environ.get("DATA_CSV", ""),          # environment variable
+        ):
+            if candidate and Path(candidate).exists():
+                df = _read_csv(candidate)
+                break
+
+    # 3) Else try common relative repo locations.
+    if df is None:
+        repo_candidates = [
+            Path("data") / "Merged_Df_Cleaned.csv",
+            Path("./Merged_Df_Cleaned.csv"),
+        ]
+        for p in repo_candidates:
+            if p.exists():
+                df = _read_csv(p)
+                break
+
+    # 4) If still not found, stop with a friendly message.
+    if df is None:
+        st.error(
+            "Could not find the dataset.\n\n"
+            "➡️ Upload it above **or** add a path in **Secrets** (`DATA_CSV`) or env var `DATA_CSV`, "
+            "or commit it to `data/Merged_Df_Cleaned.csv` in the repo."
+        )
+        st.stop()
+
+    # --- light cleaning ---
     df = df.dropna()
-    df['Air Date'] = pd.to_datetime(df['Air Date'], errors='coerce')
+    df["Air Date"] = pd.to_datetime(df["Air Date"], errors="coerce")
+
     return df
 
 combined_df = load_data()
