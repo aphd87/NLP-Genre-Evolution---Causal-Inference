@@ -644,6 +644,14 @@ controls_str = ", ".join([c for c in X_cols if c != t_feat]) or "(none)"
 ate_available = ('ate' in locals()) and ('lb' in locals()) and ('ub' in locals())
 cf_available  = ('cate' in locals()) and ('coverage' in locals()) and ('policy_value' in locals()) and ('q' in locals())
 
+# --- SAFE DEFAULTS for narrative block (prevents NameError when econml isn't installed / hasn't run) ---
+t_feat = locals().get("t_feat", "(select a treatment feature above)")
+TARGET_COL = locals().get("TARGET_COL", "next-episode viewership")
+X_cols = list(locals().get("X_cols", []) or [])
+q = locals().get("q", 20)
+
+controls_str = ", ".join([c for c in X_cols if c != t_feat]) if X_cols else "(none)"
+
 # --- Plain-English definitions ---
 st.markdown("### 📗 What the terms mean (plain English)")
 st.markdown(f"""
@@ -937,6 +945,7 @@ for group_name, subgenres in genre_groups.items():
     # ---- Numeric text + table last ----
     st.markdown(summary_text)
     st.dataframe(summary_df.style.format("{:.4f}"))
+
 
 
 
