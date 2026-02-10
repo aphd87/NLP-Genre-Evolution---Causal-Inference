@@ -1,5 +1,7 @@
-streamlit==1.39.0
+pip>=24.2
+setuptools>=70.1
 
+streamlit==1.39.0
 pandas==2.2.3
 numpy==1.26.4
 scipy==1.11.4
@@ -17,3 +19,5 @@ lightgbm==4.3.0
 
 econml==0.15.1
 shap==0.43.0
+
+
