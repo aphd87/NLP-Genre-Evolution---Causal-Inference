@@ -637,6 +637,9 @@ def interpret_ate(ate, lb, ub, t_feat, target_name):
         return (f"The **overall effect** of **{t_feat}** on **{target_name}** is **inconclusive** "
                 f"(ATE {ate:.4f} per +1 SD; 95% CI [{lb:.4f}, {ub:.4f}] spans 0).")
 
+# --- Controls list (safe defaults) ---
+X_cols = list(locals().get("X_cols", []) or [])
+
 controls_str = ", ".join([c for c in X_cols if c != t_feat]) or "(none)"
 ate_available = ('ate' in locals()) and ('lb' in locals()) and ('ub' in locals())
 cf_available  = ('cate' in locals()) and ('coverage' in locals()) and ('policy_value' in locals()) and ('q' in locals())
@@ -934,5 +937,6 @@ for group_name, subgenres in genre_groups.items():
     # ---- Numeric text + table last ----
     st.markdown(summary_text)
     st.dataframe(summary_df.style.format("{:.4f}"))
+
 
 
