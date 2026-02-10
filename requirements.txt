@@ -1,23 +1,11 @@
-pip>=24.2
-setuptools>=70.1
-
 streamlit==1.39.0
 pandas==2.2.3
 numpy==1.26.4
 scipy==1.11.4
-
-matplotlib==3.8.4
-seaborn==0.13.2
-altair==5.3.0
-
-statsmodels==0.14.2
 scikit-learn==1.4.2
-linearmodels==6.0
+statsmodels==0.14.2
+matplotlib==3.9.2
+seaborn==0.13.2
 
-xgboost==2.0.3
-lightgbm==4.3.0
-
-econml==0.15.1
-shap==0.43.0
 
 
