@@ -31,6 +31,40 @@ from scipy.stats import chi2
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 
+# ----------------------------
+# 0) Load data FIRST
+# ----------------------------
+DATA_PATH = "data/combined_df.parquet"   # or .csv (see below)
+
+@st.cache_data(show_spinner=True)
+def load_combined_df(path: str) -> pd.DataFrame:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(
+            f"Couldn't find {path}. If on Streamlit Cloud, make sure the file is in the repo "
+            f"(or use st.file_uploader / a URL / S3)."
+        )
+
+    if p.suffix.lower() == ".parquet":
+        df = pd.read_parquet(p)
+    elif p.suffix.lower() == ".csv":
+        df = pd.read_csv(p)
+    else:
+        raise ValueError("Unsupported file type. Use .parquet or .csv")
+
+    # basic guardrails
+    expected = {"Show", "Genre", "Air Date", "Viewership (millions)"}
+    missing = expected - set(df.columns)
+    if missing:
+        raise ValueError(f"combined_df is missing required columns: {sorted(missing)}")
+
+    return df
+
+try:
+    combined_df = load_combined_df(DATA_PATH)
+except Exception as e:
+    st.error(f"Data failed to load: {e}")
+    st.stop()
 
 st.set_page_config(layout="wide")
 st.title("🎬 TV Genre Evolution Dashboard")
@@ -892,6 +926,7 @@ for group_name, subgenres in genre_groups.items():
     # ---- Numeric text + table last ----
     st.markdown(summary_text)
     st.dataframe(summary_df.style.format("{:.4f}"))
+
 
 
 
