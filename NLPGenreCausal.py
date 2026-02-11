@@ -21,7 +21,7 @@ st.title("🎬 TV Genre Evolution Dashboard")
 # ============================================================
 # 0) LOAD DATA FIRST (combined_df)
 # ============================================================
-DATA_PATH = "data/combined_df.parquet"  # change to .csv if needed
+DATA_PATH = "Merged_Df_Cleaned.csv"  # change to .csv if needed
 
 @st.cache_data(show_spinner=True)
 def load_combined_df(path: str) -> pd.DataFrame:
@@ -746,6 +746,7 @@ for group_name, subgenres in genre_groups.items():
 
     st.markdown(summary_text)
     st.dataframe(summary_df.style.format("{:.4f}"), use_container_width=True)
+
 
 
 
